@@ -1,0 +1,112 @@
+from asyncio.windows_events import NULL
+import discord
+from keep_alive import keep_alive
+from discord.ext import commands 
+import pyjokes
+from sudoku import Sudoku
+import kociemba
+
+bot = commands.Bot(command_prefix = '$')  
+
+@bot.command()
+async def sudoku(ctx, arg1=0.5):
+    channel = bot.get_channel(920753510449029181)
+    puzzle = Sudoku(3).difficulty(arg1)
+    puzzle.show()
+    await channel.send("```{}```".format(puzzle))
+
+@bot.command()
+async def solve3x3h(ctx):
+    channel = bot.get_channel(920753510449029181)
+    #await channel.send('Methods you can use: Beginner, CFOP, Kociemba')
+    await channel.send('colors: D-yellow   R-green   L-blue   U-white   B-red   F-orange')
+    await channel.send(file=discord.File("images\image.png"))
+    await channel.send('order: U1, U2, U3, U4, U5, U6, U7, U8, U9, R1, R2, R3, R4, R5, R6, R7, R8, R9, F1, F2, F3, F4, F5, F6, F7, F8, F9, D1, D2, D3, D4, D5, D6, D7, D8, D9, L1, L2, L3, L4, L5, L6, L7, L8, L9, B1, B2, B3, B4, B5, B6, B7, B8, B9')
+
+@bot.command()
+async def solve3x3(ctx, a):
+  channel = bot.get_channel(920753510449029181)
+  await channel.send('wait a sec')
+  try:
+    await channel.send(kociemba.solve(a))
+    await channel.send(file=discord.File("images\cube.png"))
+    await channel.send(file=discord.File("images\cubes.jpg"))
+  except Exception as e:
+    await channel.send(e)
+    
+@bot.command()
+async def solve3x3_m(ctx, a, b):
+  channel = bot.get_channel(920753510449029181)
+  await channel.send('wait a sec')
+  try:
+    await channel.send(kociemba.solve(a, b))
+    await channel.send(file=discord.File("images\cube.png"))
+    await channel.send(file=discord.File("images\cubes.jpg"))
+  except Exception as e:
+    await channel.send(e)
+    
+@bot.command()
+async def say(ctx, *arg):
+  arg = ' '.join(arg)
+  await ctx.send(arg)
+
+@bot.command()
+async def commands_help(ctx):
+  await ctx.send("**$say *text**   _send text from user in the chat_\n**$import_antigravity**   _something fun_\n**$colored_text *color text**   _send colored text_\ncolors: orange, yellow, red, green, cyan, blue, elm, re //Note: coloring may not work correctly because of discord updates\n**$pj** _tells you a programming joke_\n**$sudoku *dificulty 0.1-0.9**   _generate sudoku to solve_\n**$ping**   _shows you bot latency in ms_\n**$solve3x3 *colors**   _solve 3x3 cube_\n**$solve3x3h**   _get help for solve3x3_\n**$solve3x3_m**   _i have no idea what this is :D_")
+
+@bot.command()
+async def import_antigravity(ctx):
+    await ctx.send('https://imgs.xkcd.com/comics/python.png')
+
+@bot.command()
+async def colored_text(ctx, arg1, *arg2):
+    arg2 = ' '.join(arg2)
+    #print(arg2)
+    if arg1 == 'yellow':
+      retStr = str(f"```fix\n{arg2}\n```")
+    elif arg1 == 'red':
+      retStr = str(f"```diff\n-{arg2}\n```")
+    elif arg1 == 'green':
+      retStr = str(f"```diff\n+{arg2}\n```")
+    elif arg1 == 'cyan':
+      retStr = str(f"```yaml\n{arg2}\n```")
+    elif arg1 == 'orange':
+      retStr = str(f"```fix\n+{arg2}\n```")
+    elif arg1 == 'blue':
+      retStr = str(f"```ini\n[{arg2}]\n```")
+    elif arg1 == 'elm':
+      retStr = str(f"```elm\n[{arg2}]\n```")
+    elif arg1 == 're':
+      retStr = str(f"```elm\n[{arg2}]\n```")
+    else:
+      await ctx.send('No such option')
+      return
+    await ctx.send(retStr)
+    
+@bot.command()
+async def pj(ctx):
+    await ctx.send(pyjokes.get_joke())
+    
+@bot.command(aliases=['p', 'q'])
+async def ping (ctx, arg=None):
+  if arg == "pong":
+    await ctx.send("pong!")
+  else:
+    await ctx.send(f"Ping is: {round(bot.latency * 1000)}ms")
+    
+@bot.event
+async def on_member_join(member):
+  print(f'{member} has join the server')
+
+@bot.event
+async def on_member_remove(member):
+  print(f'{member} has left the server')
+
+@bot.event
+async def on_ready():
+  await bot.change_presence(status=discord.Status.online, activity=discord.Game('$commands_help'), )
+  print(bot)
+  print("started!")
+
+keep_alive()
+bot.run('token')         #<== your token here!!!

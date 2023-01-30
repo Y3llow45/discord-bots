@@ -1,4 +1,4 @@
-# DiscordBot
+# Discord bots
 
-Cool discord bot made with [discord.py](https://discordpy.readthedocs.io/en/stable/).
+Cool discord bots made with [discord.py](https://discordpy.readthedocs.io/en/stable/).
 
